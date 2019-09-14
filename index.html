@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>マニーラン簡易計算ツール</title>
+    <link rel="apple-touch-icon-precomposed" href="takase.png">
+    <link rel="icon" href="takase.png">
+    <meta name="viewport" id="viewport" content="width=480,user-scalable=yes">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="./friendly2.js"></script>
+    <style>
+<!--
+#fr_table{
+  width: 360;
+  table-layout: auto;
+  margin: 5px auto;
+  padding: 5px;
+}
+td:first-child{
+  text-align: center;
+}
+td:last-child{
+  text-align: right;
+}
+select{
+  width: 80;
+}
+-->
+    </style>
+  </head>
+  <body>
+    <p align="center">
+      ver. 0.95くらい？
+    </p>
+    <div align="center">
+      <select id="fr_from"></select>
+      から
+      <select id="fr_to"></select>
+      まで
+    </div>
+    <table id="fr_table" border="1" align="center">
+      <tbody>
+        <tr>
+          <td>必要親密度値</td>
+          <td id="fr_want"></td>
+        </tr>
+        <tr>
+          <td>プレゼント(大, 中, 小)</td>
+          <td id="fr_present"></td>
+        </tr>
+        <tr>
+          <td>必要マニー [マニー]</td>
+          <td id="fr_money"></td>
+        </tr>
+        <tr>
+          <td>即終了回数(A設定) [回]</td>
+          <td id="fr_endA"></td>
+        </tr>
+        <tr>
+          <td>即終了回数(B設定) [回]</td>
+          <td id="fr_endB"></td>
+        </tr>
+        <tr>
+          <td>リアルマニー(A設定) [円]</td>
+          <td id="fr_rmoneyA"></td>
+        </tr>
+        <tr>
+          <td>リアルマニー(B設定) [円]</td>
+          <td id="fr_rmoneyB"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
