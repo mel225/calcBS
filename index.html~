@@ -1,10 +1,11 @@
 <html>
   <head>
-    <title>バトルスコア計算ツール</title>
-    <link rel="apple-touch-icon-precomposed" href="aopai.png">
-    <link rel="icon" href="aopai.png">
+    <title>マニーラン簡易計算ツール</title>
+    <link rel="apple-touch-icon-precomposed" href="takase.png">
+    <link rel="icon" href="takase.png">
     <meta name="viewport" id="viewport" content="width=480,user-scalable=yes">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="./friendly2.js"></script>
     <style>
 <!--
 #fr_table{
