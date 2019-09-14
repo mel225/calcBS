@@ -27,43 +27,55 @@ select{
   </head>
   <body>
     <p align="center">
-      ver. 0.95くらい？
+      ver. 0.50くらい？
     </p>
     <div align="center">
-      <select id="fr_from"></select>
-      から
-      <select id="fr_to"></select>
-      まで
+      <input type="button" onclick="javascript:void(0);">曲を選択</input>
+      <p id="music_name"></p>
     </div>
     <table id="fr_table" border="1" align="center">
       <tbody>
         <tr>
-          <td>必要親密度値</td>
-          <td id="fr_want"></td>
+          <th>項目</th>
+          <th>カード1</th>
+          <th>カード2</th>
+          <th>カード3</th>
         </tr>
         <tr>
-          <td>プレゼント(大, 中, 小)</td>
-          <td id="fr_present"></td>
+          <td>属性</td>
+          <td>
+            <input type="radio" id="type1" value="0">リーフ</br>
+            <input type="radio" id="type1" value="1">ファイア</br>
+            <input type="radio" id="type1" value="2">アクア</br>
+          </td>
+          <td>
+            <input type="radio" id="type2" value="0">リーフ</br>
+            <input type="radio" id="type2" value="1">ファイア</br>
+            <input type="radio" id="type2" value="2">アクア</br>
+          </td>
+          <td>
+            <input type="radio" id="type3" value="0">リーフ</br>
+            <input type="radio" id="type3" value="1">ファイア</br>
+            <input type="radio" id="type3" value="2">アクア</br>
+          </td>
         </tr>
         <tr>
-          <td>必要マニー [マニー]</td>
-          <td id="fr_money"></td>
+          <td>攻撃力</td>
+          <td><input type="number" id="power1"></td>
+          <td><input type="number" id="power2"></td>
+          <td><input type="number" id="power3"></td>
         </tr>
         <tr>
-          <td>即終了回数(A設定) [回]</td>
-          <td id="fr_endA"></td>
+          <td>スキルタイプ</td>
+          <td><select id="skilltype1"></select></td>
+          <td><select id="skilltype2"></select></td>
+          <td><select id="skilltype3"></select></td>
         </tr>
         <tr>
-          <td>即終了回数(B設定) [回]</td>
-          <td id="fr_endB"></td>
-        </tr>
-        <tr>
-          <td>リアルマニー(A設定) [円]</td>
-          <td id="fr_rmoneyA"></td>
-        </tr>
-        <tr>
-          <td>リアルマニー(B設定) [円]</td>
-          <td id="fr_rmoneyB"></td>
+          <td>スキル詳細</td>
+          <td><select id="skill1"></select></td>
+          <td><select id="skill2"></select></td>
+          <td><select id="skill3"></select></td>
         </tr>
       </tbody>
     </table>
