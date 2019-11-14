@@ -1,11 +1,12 @@
 main();
 
 async function main(){
-  var CardList = getCardDocList().then(async docs => {
-    var CardDetailList = docs.map(getCardDetail);
-    return await CardDetailList;
+  var CardList = await getCardDocList().then(async docs => {
+    return Promise.all(docs.map(getCardDetail)).then(cards => {
+      return cards;
+    });
   });
-  console.log(await CardList);
+  console.log(CardList);
 }
 
 function getCardDetail(CardDetailDoc){
@@ -19,23 +20,23 @@ function getCardDetail(CardDetailDoc){
     CardDetail.gentotsuNum = detail.getElementsByClassName("card_detail_star_container v_b f_0")[0].children[1].children.length;
     CardDetail.kaika = (hoge = detail.getElementsByClassName("card_kaika")[0]) ? hoge.src.split("icon_")[1].split(".png")[0] : "mikaika";
     CardDetail.name = detail.getElementsByClassName("p_t_5 f_14 l_h_12 break")[0].innerText;
-    CardDetail.levelNum = detail.getElementsByClassName("card_lv_block t_r f_0")[0].children[0].innerText;
-    CardDetail.levelMax = detail.getElementsByClassName("card_lv_block t_r f_0")[0].children[1].innerText.split("/")[1];
+    CardDetail.levelNum = parseInt(detail.getElementsByClassName("card_lv_block t_r f_0")[0].children[0].innerText);
+    CardDetail.levelMax = parseInt(detail.getElementsByClassName("card_lv_block t_r f_0")[0].children[1].innerText.split("/")[1]);
     var detailTable = detail.getElementsByClassName("card_detail_param_block")[0].firstElementChild;
     var power = detailTable.rows[0].cells[1].innerText;
-    CardDetail.powerNum = power.split("/")[0];
-    CardDetail.powerMax = power.split("/")[1];
-    CardDetail.printable = detailTable.rows[1].cells[1].firstElementChild.innerText;
+    CardDetail.powerNum = parseInt(power.split("/")[0]);
+    CardDetail.powerMax = parseInt(power.split("/")[1]);
+    CardDetail.printable = parseInt(detailTable.rows[1].cells[1].firstElementChild.innerText);
     CardDetail.ver = detailTable.rows[2].cells[1].innerText;
-    CardDetail.skillName = detail.getElementsByClassName("f_11 l_h_12 p_l_5")[0].innerText;
-    CardDetail.skillDetail = detail.getElementsByClassName("f_10 l_h_10 v_t break")[0].innerText;
+    CardDetail.skillName = detail.getElementsByClassName("f_11 l_h_12 p_l_5")[0].innerText.trim();
+    CardDetail.skillDetail = detail.getElementsByClassName("f_10 l_h_10 v_t break")[0].innerText.trim();
     CardDetail.how2get = CardDetailDoc.getElementsByClassName("card_detail_other_item")[0].innerText.split("\n");
     CardDetail.ticket = [];
     for(var i=1; hoge = CardDetailDoc.getElementsByClassName("card_detail_other_item")[i]; i++){
-      CardDetail.ticket.push({rarity : hoge.innerText.split("【")[1].split("】")[0], name : hoge.innerText.split("\n")[0].split("】")[1], num : hoge.innerText.split("\n")[1].split("枚")[0]});
+      CardDetail.ticket.push({rarity : hoge.innerText.split("【")[1].split("】")[0], name : hoge.innerText.trim().split("\n")[0].split("】")[1].trim(), num : parseInt(hoge.innerText.trim().split("\n")[1].split("枚")[0].trim())});
     }
 
-    setTimeout(resolve, 1, CardDetail);
+    setTimeout(resolve, 5, CardDetail);
   });
 }
 

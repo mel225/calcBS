@@ -12,7 +12,7 @@ class xhrAccesser {
 
   printTime(msg){
     var time = (new Date().getTime() - this.time) / 1000;
-    console.log(msg + " " + time + " ms.");
+    console.log(msg + " " + time + " sec.");
     return time;
   }
 
