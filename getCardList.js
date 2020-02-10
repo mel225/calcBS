@@ -2,7 +2,7 @@ if(document.getElementById("xhrReader")){
   main();
 }else{
   var s = document.createElement("script");
-  s.src = "xhrAccessor.js";
+  s.src = "https://mel225.github.io/calcBS/xhrAccessor.js";
   s.id = "xhrReader";
   s.onload = main;
   document.head.appendChild(s);
