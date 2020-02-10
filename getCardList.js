@@ -1,4 +1,12 @@
-main();
+if(document.getElementById("xhrReader")){
+  main();
+}else{
+  var s = document.createElement("script");
+  s.src = "xhrAccessor.js";
+  s.id = "xhrReader";
+  s.onload = main;
+  document.head.appendChild(s);
+}
 
 async function main(){
   var CardList = await getCardDocList().then(async docs => {
@@ -40,7 +48,7 @@ function getCardDetail(CardDetailDoc){
   });
 }
 
-async function getCardDocList(){
+function getCardDocList(){
   var xhra = new xhrAccesser();
   return new Promise(async resolve => {
     var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=0&order=asc&pIdx=";
