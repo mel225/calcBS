@@ -51,6 +51,7 @@ function getCardDetail(CardDetailDoc){
 function getCardDocList(){
   var xhra = new xhrAccesser();
   return new Promise(async resolve => {
+    // カード一覧のすべてのページを取得する
     var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=0&order=asc&pIdx=";
     var pages = xhra.access(url + 1).then((doc) => {return doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1];});
     console.log("pages: " + await pages);
@@ -60,10 +61,12 @@ function getCardDocList(){
     }
     setTimeout(resolve, 1, PageURLs);
   }).then(PageURLs => {
+    // すべてのページにアクセスする
     return Promise.all(PageURLs.map(url => {
       return xhra.access(url);
     }));
   }).then(PageDocs => {
+    // ページ内のカードURLを取得する
     CardURLs = [];
     return new Promise(resolve => {
       PageDocs.forEach(doc => {
@@ -79,6 +82,7 @@ function getCardDocList(){
       setTimeout(resolve, 1, CardURLs);
     });
   }).then(CardURLs => {
+    // すべてのカードURLにアクセスする
     return Promise.all(CardURLs.map(url => {
       return xhra.access(url);
     }));
