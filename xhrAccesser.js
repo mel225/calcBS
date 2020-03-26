@@ -21,9 +21,9 @@ class xhrAccesser {
     return new Promise(async resolve => {
       var id = t.id++;
       t.printTime("[ " + id + " / " + t.count + " ] regist.");
-      while(id != t.count)
+      do{
         await new Promise(resolve => setTimeout(resolve, 100));
-      await new Promise(resolve => setTimeout(resolve, 50));
+      }while(id != t.count);
       t.printTime("[ " + id + " ] start. ");
       resolve();
     });
@@ -41,18 +41,16 @@ class xhrAccesser {
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
       request.responseType = "document";
-      request.send("");
-      request.onreadystatechange = function() {
-        if (request.readyState == 4 && request.status == 200) {
-          console.log(request.response.URL);
-          t.complete();
-          if(request.response.URL.indexOf(url) >= 0){
-            resolve(request.response);
-          }else{
-            reject("Error: URL がちがうよ？");
-          }
+      request.onload = function() {
+        console.log(request.response.URL);
+        t.complete();
+        if(request.response.URL.indexOf(url) >= 0){
+          resolve(request.response);
+        }else{
+          reject("Error: URL がちがうよ？");
         }
-      }
+      };
+      request.send("");
     });
   }
 }

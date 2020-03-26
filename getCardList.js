@@ -55,7 +55,7 @@ function getCardDocList(){
     var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=0&order=asc&pIdx=";
     var pages = xhra.access(url + 1).then((doc) => {return doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1];});
     console.log("pages: " + await pages);
-    var PageURLs = [];
+    var PageURLs = [url + 1];
     for(var i=1; i<=await pages; i++){
       PageURLs.push(url + (i+1));
     }
