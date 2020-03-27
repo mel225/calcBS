@@ -22,7 +22,7 @@ class xhrAccesser {
       var id = t.id++;
       t.printTime("[ " + id + " / " + t.count + " ] regist.");
       do{
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 120));
       }while(id != t.count);
       t.printTime("[ " + id + " ] start. ");
       resolve();
