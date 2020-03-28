@@ -17,9 +17,11 @@ async function main(){
   console.log(CardList);
 }
 
-function getCardDetail(CardDetailDoc){
+function getCardDetail(CardNoAndDoc){
   return new Promise(resolve => {
+    var CardDetailDoc = CardNoAndDoc[1];
     var CardDetail = {};
+    CardDetail.cardNo = CardNoAndDoc[0];
     CardDetail.imgURL = CardDetailDoc.getElementsByClassName("card_detail_img w_212")[0].src;
     var detail = CardDetailDoc.getElementsByClassName("card_detail_container f_l t_l")[0];
     CardDetail.attribute = detail.getElementsByClassName("h_50 f_0")[0].children[0].src.split("icon_")[1].split(".png")[0];
@@ -51,14 +53,17 @@ function getCardDetail(CardDetailDoc){
 function getCardDocList(){
   var xhra = new xhrAccesser();
   return new Promise(async resolve => {
-    // カード一覧のすべてのページを取得する
-    var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=0&order=asc&pIdx=";
-    var pages = xhra.access(url + 1).then((doc) => {return doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1];});
+    //------ カード一覧のすべてのページを取得する
+    var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=2&order=asc&pIdx=";
+    // ページ数を取得
+    var pages = xhra.access(url + 1).then(doc => {return doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1];});
     console.log("pages: " + await pages);
-    var PageURLs = [url + 1];
+    // すべてのページのURLを生成 pIdx = pageIndex を 1-pages で URL 生成
+    var PageURLs = [];
     for(var i=1; i<=await pages; i++){
-      PageURLs.push(url + (i+1));
+      PageURLs.push(url + i);
     }
+    // 処理を後ろに追加するためにタイムアウトに登録する形でresolve
     setTimeout(resolve, 1, PageURLs);
   }).then(PageURLs => {
     // すべてのページにアクセスする
@@ -67,24 +72,26 @@ function getCardDocList(){
     }));
   }).then(PageDocs => {
     // ページ内のカードURLを取得する
-    CardURLs = [];
+    CardURLs = {};
     return new Promise(resolve => {
       PageDocs.forEach(doc => {
-        Array.prototype.push.apply(CardURLs, Array.from(doc.getElementsByClassName("t_c border_block m_5 p_5")).map(item => {
+        Array.from(doc.getElementsByClassName("t_c border_block m_5 p_5")).forEach(item => {
+          var cardNo = item.getElementsByClassName("t_c break f_11 l_h_12")[0].innerText.trim();
           var input = item.getElementsByTagName("input");
           var param = [];
           for(var j=0; j<input.length; j++){
             param.push(input[j].name + "=" + encodeURIComponent(input[j].value));
           }
-          return "https://ongeki-net.com/ongeki-mobile/card/cardDetail/?" + param.join("&");
+          // URL とカード No. を返す
+          CardURLs[cardNo] = "https://ongeki-net.com/ongeki-mobile/card/cardDetail/?" + param.join("&");
         }));
       });
       setTimeout(resolve, 1, CardURLs);
     });
-  }).then(CardURLs => {
+  }).then(CardURLampNo => {
     // すべてのカードURLにアクセスする
-    return Promise.all(CardURLs.map(url => {
-      return xhra.access(url);
+    return Promise.all(Object.keys(CardURLs).map(no => {
+      return [no, xhra.access(CardURLs[no])]; // [CardNo, Doc] を返す
     }));
   });
 }
