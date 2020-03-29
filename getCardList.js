@@ -84,7 +84,7 @@ function getCardDocList(){
           }
           // URL とカード No. を返す
           CardURLs[cardNo] = "https://ongeki-net.com/ongeki-mobile/card/cardDetail/?" + param.join("&");
-        }));
+        });
       });
       setTimeout(resolve, 1, CardURLs);
     });
