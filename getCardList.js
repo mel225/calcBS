@@ -9,19 +9,15 @@ if(document.getElementById("xhrReader")){
 }
 
 async function main(){
-  var CardList = await getCardDocList().then(async docs => {
-    return Promise.all(docs.map(getCardDetail)).then(cards => {
-      return cards;
-    });
+  var CardList = await getCardList().then(cards => {
+    return cards;
   });
   console.log(CardList);
 }
 
-function getCardDetail(CardNoAndDoc){
+function getCardDetail(CardNo, CardDetailDoc){
   return new Promise(resolve => {
-    var CardDetailDoc = CardNoAndDoc[1];
-    var CardDetail = {};
-    CardDetail.cardNo = CardNoAndDoc[0];
+    CardDetail.cardNo = CardNo;
     CardDetail.imgURL = CardDetailDoc.getElementsByClassName("card_detail_img w_212")[0].src;
     var detail = CardDetailDoc.getElementsByClassName("card_detail_container f_l t_l")[0];
     CardDetail.attribute = detail.getElementsByClassName("h_50 f_0")[0].children[0].src.split("icon_")[1].split(".png")[0];
@@ -50,7 +46,7 @@ function getCardDetail(CardNoAndDoc){
   });
 }
 
-function getCardDocList(){
+function getCardList(){
   var xhra = new xhrAccesser();
   return new Promise(async resolve => {
     //------ カード一覧のすべてのページを取得する
@@ -89,9 +85,11 @@ function getCardDocList(){
       setTimeout(resolve, 1, CardURLs);
     });
   }).then(CardURLampNo => {
-    // すべてのカードURLにアクセスする
+    // すべてのカードURLにアクセスしてデータを得る
     return Promise.all(Object.keys(CardURLs).map(no => {
-      return [no, xhra.access(CardURLs[no])]; // [CardNo, Doc] を返す
+      return xhra.access(CardURLs[no]).then(doc => {
+        return getCardDetail(no, doc);
+      });
     }));
   });
 }
