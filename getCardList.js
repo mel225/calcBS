@@ -17,6 +17,7 @@ async function main(){
 
 function getCardDetail(CardNo, CardDetailDoc){
   return new Promise(resolve => {
+    var CardDetail = {};
     CardDetail.cardNo = CardNo;
     CardDetail.imgURL = CardDetailDoc.getElementsByClassName("card_detail_img w_212")[0].src;
     var detail = CardDetailDoc.getElementsByClassName("card_detail_container f_l t_l")[0];
