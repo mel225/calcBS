@@ -43,7 +43,7 @@
       }
       
       complete(){
-        this.completeTimeList.push(this.printTime("[ " + this.count + " / " + t.id + " ] complete."));
+        this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
         this.count++;
       }
       
