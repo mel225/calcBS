@@ -26,6 +26,8 @@ async function main(){
   sbox.className = "searchbox";
   var stable = sbox.appendChild(d.createElement("table"));
   stable.className = "searchtable";
+  var r = stable.insertRow();
+  r.insertCell().appendChild(d.createElement("span")).innerText = "";
 }
 
 function getCardDetail(CardNo, CardDetailDoc){
@@ -61,7 +63,6 @@ function getCardDetail(CardNo, CardDetailDoc){
 }
 
 function getCardList(){
-  var xhra = new xhrAccesser();
   return new Promise(async resolve => {
     //------ カード一覧のすべてのページを取得する
     var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=2&order=asc&pIdx=";
