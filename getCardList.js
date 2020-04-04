@@ -13,6 +13,19 @@ async function main(){
     return cards;
   });
   console.log(CardList);
+
+  // 表示用タブopen
+  var w = window.open();
+  var d = w.document;
+  // 検索ボックス(search box)
+  var sbox = d.body.appendChild(d.createElement("div"));
+  // 一覧表示ボックス(list box)
+  var lbox = d.body.appendChild(d.createElement("div"));
+
+  // 検索ボックスの設定
+  sbox.className = "searchbox";
+  var stable = sbox.appendChild(d.createElement("table"));
+  stable.className = "searchtable";
 }
 
 function getCardDetail(CardNo, CardDetailDoc){
