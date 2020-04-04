@@ -56,7 +56,7 @@
           request.responseType = "document";
           request.onload = function() {
             console.log(request.response.URL);
-            t.complete();
+            setTimeout(t.complete, 10);
             if(request.response.URL.indexOf(url) >= 0){
               resolve(request.response);
             }else{
