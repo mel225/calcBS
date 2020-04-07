@@ -41,23 +41,9 @@
           }, 10);
         });
       }
-
-      printTimeList(){
-        console.log(this.completeTimeList);
-      }
-
-      getTimeList(){
-        return this.completeTimeList;
-      }
-
-      pushTimeList(value){
-        this.completeTimeList.push(value);
-      }
       
-      completed(){
-        console.log(this);
-        //this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
-        this.pushTimeList(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
+      complete(){
+        this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
         this.count++;
       }
       
@@ -70,7 +56,7 @@
           request.responseType = "document";
           request.onload = function() {
             console.log(request.response.URL);
-            setTimeout(t.completed, 20);
+            setTimeout(()=>t.complete(), 20);
             if(request.response.URL.indexOf(url) >= 0){
               resolve(request.response);
             }else{
