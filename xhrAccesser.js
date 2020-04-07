@@ -33,7 +33,7 @@
               setTimeout(()=>{t.clearing=false;}, t.id/10);
               t.count++;
             }
-            if(t.count == id && !t.stopping && !t.clear){
+            if(t.count == id && !t.stopping && !t.clearing){
               t.printTime("[ " + id + " / " + t.id + " ] start. ");
               clearInterval(timer);
               resolve();
@@ -68,15 +68,15 @@
       }
       
       stop(){
-        t.stopping = true;
+        this.stopping = true;
       }
       
       start(){
-        t.stopping = false;
+        this.stopping = false;
       }
       
       clear(){
-        t.clearing = true;
+        this.clearing = true;
       }
     }
 
