@@ -41,6 +41,14 @@
           }, 10);
         });
       }
+
+      printTimeList(){
+        console.log(this.completeTimeList);
+      }
+
+      getTimeList(){
+        return this.completeTimeList;
+      }
       
       complete(){
         this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
