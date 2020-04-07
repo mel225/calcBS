@@ -49,9 +49,14 @@
       getTimeList(){
         return this.completeTimeList;
       }
+
+      pushTimeList(value){
+        this.completeTimeList.push(value);
+      }
       
       complete(){
-        this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
+        //this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
+        this.pushTimeList(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
         this.count++;
       }
       
