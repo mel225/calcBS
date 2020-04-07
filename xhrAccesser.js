@@ -6,8 +6,8 @@
         this.time = new Date().getTime();
         this.id = 0;
         this.completeTimeList = [];
-        this.clear = false;
-        this.stop = false;
+        this.clearing = false;
+        this.stopping = false;
       }
       
       resetTime(){
@@ -27,13 +27,13 @@
           t.printTime("[ " + id + " ] regist.");
           await new Promise(resolve => setTimeout(resolve, 110));
           var timer = setInterval(()=>{
-            if(t.clear){
+            if(t.clearing){
               clearInterval(timer);
               t.printTime("[ " + id + " / " + t.id + " ] cleared. ");
-              setTimeout(()=>{t.clear=false;}, t.id/10);
+              setTimeout(()=>{t.clearing=false;}, t.id/10);
               t.count++;
             }
-            if(t.count == id && !t.stop && !t.clear){
+            if(t.count == id && !t.stopping && !t.clear){
               t.printTime("[ " + id + " / " + t.id + " ] start. ");
               clearInterval(timer);
               resolve();
@@ -56,7 +56,7 @@
           request.responseType = "document";
           request.onload = function() {
             console.log(request.response.URL);
-            setTimeout(t.complete, 10);
+            setTimeout(t.complete, 20);
             if(request.response.URL.indexOf(url) >= 0){
               resolve(request.response);
             }else{
@@ -68,15 +68,15 @@
       }
       
       stop(){
-        t.stop = true;
+        t.stopping = true;
       }
       
       start(){
-        t.stop = false;
+        t.stopping = false;
       }
       
       clear(){
-        t.clear = true;
+        t.clearing = true;
       }
     }
 
