@@ -13,6 +13,17 @@
       resetTime(){
         this.time = new Date().getTime();
       }
+
+      resetCount(){
+        this.count = 0;
+        this.id = 0;
+        this.completeTimeList = [];
+      }
+
+      reset(){
+        this.resetTime();
+        this.resetCount();
+      }
       
       printTime(msg){
         var time = (new Date().getTime() - this.time) / 1000;
@@ -24,17 +35,17 @@
         var t = this;
         return new Promise(async resolve => {
           var id = t.id++;
-          t.printTime("[ " + id + " ] regist.");
+          t.printTime("[ " + (id+1) + " ] regist.");
           await new Promise(resolve => setTimeout(resolve, 110));
           var timer = setInterval(()=>{
             if(t.clearing){
               clearInterval(timer);
-              t.printTime("[ " + id + " / " + t.id + " ] cleared. ");
-              setTimeout(()=>{t.clearing=false;}, t.id/10);
+              t.printTime("[ " + (id+1) + " / " + t.id + " ] cleared. ");
+              setTimeout(()=>{t.clearing=false;}, 20);
               t.count++;
             }
             if(t.count == id && !t.stopping && !t.clearing){
-              t.printTime("[ " + id + " / " + t.id + " ] start. ");
+              t.printTime("[ " + (id+1) + " / " + t.id + " ] start. ");
               clearInterval(timer);
               resolve();
             }
@@ -43,7 +54,7 @@
       }
       
       complete(){
-        this.completeTimeList.push(this.printTime("[ " + this.count + " / " + this.id + " ] complete."));
+        this.completeTimeList.push(this.printTime("[ " + (this.count+1) + " / " + this.id + " ] complete."));
         this.count++;
       }
       
