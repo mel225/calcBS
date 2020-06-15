@@ -69,7 +69,7 @@ function getCardDetail(CardNo, CardDetailDoc){
     CardDetail.character = CardDetail.name.split("】")[1].split("[")[0];
     CardDetail.levelNum = parseInt(detail.getElementsByClassName("card_lv_block t_r f_0")[0].children[0].innerText);
     CardDetail.levelMax = parseInt(detail.getElementsByClassName("card_lv_block t_r f_0")[0].children[1].innerText.split("/")[1]);
-    var detailTable = ;
+    //var detailTable = ;
     Array.from(detail.getElementsByClassName("card_detail_param_block")[0].firstElementChild.rows).forEach(function(tr){
       // 攻撃力
       if(tr.cells[0].innerText.indexOf("攻撃力") >= 0){
