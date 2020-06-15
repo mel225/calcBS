@@ -14,7 +14,7 @@ if(document.getElementById("xhrReader")){
     s.id = "Sortable";
     s.onload = ()=>resolve();
     document.head.appendChild(s);
-  }), newPromise(resolve=>{
+  }), new Promise(resolve=>{
     var s = document.createElement("script");
     s.src = "http://localhost/printCardList.js";
     s.id = "printCardList";
