@@ -10,13 +10,13 @@ if(document.getElementById("xhrReader")){
     document.head.appendChild(s);
   }), new Promise(resolve=>{
     var s = document.createElement("script");
-    s.src = "http://mel225.github.io/calcBS/Sortable.js";
+    s.src = "https://mel225.github.io/calcBS/Sortable.js";
     s.id = "Sortable";
     s.onload = ()=>resolve();
     document.head.appendChild(s);
   }), new Promise(resolve=>{
     var s = document.createElement("script");
-    s.src = "http://mel225.github.io/calcBS/printCardList.js";
+    s.src = "https://mel225.github.io/calcBS/printCardList.js";
     s.id = "printCardList";
     s.onload = ()=>resolve();
     document.head.appendChild(s);
