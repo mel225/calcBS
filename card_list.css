@@ -1,0 +1,181 @@
+* {
+  transition: 0.4s;
+  transition-timing-function: ease-out;
+}
+
+body {
+  margin: 0;
+}
+
+.background_panel {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background_panel img {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  max-width: 50px;
+  margin: auto;
+  position: relative;
+  background-color: #fff6;
+  filter: brightness(80%);
+  opacity: 0.3;
+}
+
+img {
+  opacity: 0.8;
+}
+
+.wrapper {
+  display: block;
+  width: 480px;
+  height: auto;
+  margin: 0 auto;
+  padding: 0;
+  position: relative;
+}
+
+select {
+  width: 380px;
+  padding: 2px 6px;
+  outline: none;
+  vertical-align: middle;
+  background: #fff;
+}
+
+.searchtable td {
+  max-width: 380px;
+}
+
+.searchtable td:first-child {
+  text-align: center;
+}
+
+.searchtable td:last-child {
+  width: 380px;
+}
+
+.searchbox {
+  margin: 2px 0;
+  background: #aaa8;
+  border: 2px solid #1128;
+  border-radius: 5px;
+}
+
+.category {
+  position: relative;
+  padding: 2px;
+  margin: 4px 0;
+  background: #eef;
+}
+
+.hsbutton {
+  display: block;
+  position: absolute;
+  right: 2px;
+  top: 0;
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 0 2px;
+  margin: 4px;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+.filter_label {
+  display: none;
+  position: relative;
+  padding: 4px;
+  margin: 2px;
+  width: fit-content;
+  color: #336;
+  font-size: 12px;
+  line-height: 1.2rem;
+  background: #fff;
+  border: 2px solid #66c;
+  border-radius: 4px;
+  box-shadow: 1px 3px 3px #66c6;
+  overflow: hidden;
+}
+
+input[type=checkbox]:checked + .filter_label {
+  display: inline-block;
+  background: #336;
+  color: #fff;
+}
+
+.filter_caption {
+  margin: 2px;
+}
+
+#sort {
+  margin: 5px;
+}
+
+.sort_item {
+  position: relative;
+  padding: 5px 12px;
+  margin-bottom: -1px;
+  background: #fffc;
+  cursor: move;
+  border: 1px solid #65fc;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.sort_item:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.sort_item:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.sortable-chosen {
+  background: #cefc;
+}
+
+#listtable {
+  width: 480px;
+}
+
+#listtable td {
+  background: #fffc;
+  text-align: center;
+}
+
+.span_bolder {
+  font-size: 12px;
+  font-weight: bolder;
+}
+
+.minispan {
+  font-size: 8px;
+  font-weight: normal;
+}
+
+.link_detail {
+  cursor: pointer;
+}
+
+.img_card {
+  width: auto;
+  height: 32px;
+}
+
+.icon_rarity, .icon_attribute, .icon_kaika, .icon_skill {
+  width: auto;
+  height: 20px;
+  vertical-align: middle;
+}
