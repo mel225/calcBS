@@ -24,19 +24,18 @@
         this.resetTime();
         this.resetCount();
       }
-      
+
       printTime(msg){
         var time = (new Date().getTime() - this.time) / 1000;
         console.log(msg + " " + time + " sec.");
         return time;
       }
-      
+
       regist(){
         var t = this;
         return new Promise(async resolve => {
           var id = t.id++;
           t.printTime("[ " + (id+1) + " ] regist.");
-          await new Promise(resolve => setTimeout(resolve, 110));
           var timer = setInterval(()=>{
             if(t.clearing){
               clearInterval(timer);
@@ -46,8 +45,9 @@
             }
             if(t.count == id && !t.stopping && !t.clearing){
               t.printTime("[ " + (id+1) + " / " + t.id + " ] start. ");
+              
               clearInterval(timer);
-              resolve();
+              setTimeout(resolve, 100);
             }
           }, 10);
         });
