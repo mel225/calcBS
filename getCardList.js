@@ -125,6 +125,12 @@ function toCardDetailURL(url, no){
               closemodal.style.cursor = "pointer";
               closemodal.style.textDecoration = "underline";
               addTag(closemodal);
+
+              if(confirm("データを送信します。")){
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "https://mel225.sakura.ne.jp/scl/updateCardList.php");
+                xhr.send(createFormData(list));
+              }
             }
             prog++;
           }
@@ -262,7 +268,7 @@ function addTag(tag){
   statusbox.appendChild(document.createElement("br"));
 }
 
-function createFromData(data){
+function createFormData(data){
   var fd = new FormData();
   fd.append("datasize", data.length);
   for(var i = 0; i < data.length; i++){
