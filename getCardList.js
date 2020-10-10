@@ -109,7 +109,7 @@ function toCardDetailURL(url, no){
         var timerID = setInterval(function(){
           if(loads*20/cards >= prog){
             addStatus("カード詳細 読込中… " + prog*5 + "%");
-            if(prog*step >= 20){
+            if(prog >= 20){
               clearInterval(timerID);
               console.log(list);
               addStatus("");
