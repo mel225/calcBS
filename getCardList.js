@@ -9,15 +9,16 @@ modal.style.top = 0;
 var statusbox = modal.appendChild(document.createElement("div"));
 statusbox.style.position = "absolute";
 statusbox.style.margin = "auto";
-statusbox.style.padding = "5px";
 statusbox.style.left = 0;
 statusbox.style.right = 0;
 statusbox.style.top = 0;
 statusbox.style.bottom = 0;
 statusbox.style.width = "80%";
 statusbox.style.height = "80%";
+statusbox.style.overflowY = "scroll";
 statusbox.style.background = "url('https://ongeki-net.com/ongeki-mobile/img/back_base.png') repeat";
-statusbox.innerText = "Sorted Card List v0.5 by mel225 (twitter: casge_pzl)\n";
+
+addStatus("Sorted Card List v0.5 by mel225 (twitter: casge_pzl)");
 
 var pages = 0;
 var cards = 0;
@@ -29,7 +30,7 @@ if(document.getElementById("xhrAccesser")){
   xhra.reset();
   main();
 }else{
-  var listJS = ["xhrAccesser", "Sortable", "printCardList"];
+  var listJS = ["xhrAccesser", "Sortable.min", "printCardList"];
   Promise.all(listJS.map(getJS)).then(function(){
     main();
   });
@@ -75,19 +76,19 @@ async function getCardList(){
   //------ カード一覧のすべてのページを取得する
   var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=2&order=asc&pIdx=";
   // ページ数を取得
-  pages = xhra.access(url + 1).then(doc=>Number(doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1].trim()));
+  await xhra.access(url + 1).then(doc=>{pages = Number(doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1].trim())});
   console.log("pages: " + await pages);
   addStatus("カード一覧　ページ数：" + pages);
   // すべてのページのURLを生成しアクセス pIdx = pageIndex を 1-pages で URL 生成
   for(var i=1; i<=await pages; i++){
-    toCardDetailURL(url + i);
+    toCardDetailURL(url, i);
   }
 }
 
-function toCardDetailURL(listurl){
+function toCardDetailURL(url, no){
   var count = 0;
-  xhra.access(listurl).then(function(doc){
-    addStatus("カード一覧　ページNo." + listurl.slice(-1) + " 読込完了");
+  xhra.access(url + no).then(function(doc){
+    addStatus("カード一覧　ページNo." + no + " 読込完了");
     Array.from(doc.getElementsByClassName("t_c border_block m_5 p_5")).forEach(item => {
       cardcount++;
       count++;
@@ -100,20 +101,30 @@ function toCardDetailURL(listurl){
       // URL とカード No. でdetail取得
       getCardDetail(cardNo, "https://ongeki-net.com/ongeki-mobile/card/cardDetail/?" + param.join("&"));
       // ステータスウィンドウ用
-      if(listurl.slice(-1) == pages && doc.getElementsByClassName("t_c border_block m_5 p_5").length == count){
+      if(no == pages && doc.getElementsByClassName("t_c border_block m_5 p_5").length == count){
         cards = cardcount;
         addStatus("カード詳細 全" + cards + "カードのURL取得完了");
-        addStatus("カード詳細 読込開始   0%");
+        addStatus("カード詳細 読込開始 0%");
         var prog = 1;
         var timerID = setInterval(function(){
-          if(loads*10/cards >= prog){
-            addStatus("カード詳細 読込中…" + ("   " + prog*10).slice(-3) + "%");
-            if(prog == 10){
+          if(loads*20/cards >= prog){
+            addStatus("カード詳細 読込中… " + prog*5 + "%");
+            if(prog*step >= 20){
               clearInterval(timerID);
               console.log(list);
               addStatus("");
               addStatus("念のためlocalStorageにJSONを突っ込んでおきます。");
               localStorage["mel225_SCL"] = JSON.stringify(list);
+
+              var closemodal = document.createElement("a");
+              closemodal.innerText = "閉じる";
+              closemodal.onclick = function(){
+                modal.parentNode.removeChild(modal);
+              };
+              closemodal.style.color = "#000";
+              closemodal.style.cursor = "pointer";
+              closemodal.style.textDecoration = "underline";
+              addTag(closemodal);
             }
             prog++;
           }
@@ -242,5 +253,30 @@ function getJS(name){
 }
 
 function addStatus(status){
-  statusbox.innerText += "\n" + status;
+  statusbox.appendChild(document.createElement("span")).innerText = status;
+  statusbox.appendChild(document.createElement("br"));
+}
+
+function addTag(tag){
+  statusbox.appendChild(tag);
+  statusbox.appendChild(document.createElement("br"));
+}
+
+function createFromData(data){
+  var fd = new FormData();
+  fd.append("datasize", data.length);
+  for(var i = 0; i < data.length; i++){
+    fd.append("name"+i, data[i].name);
+    fd.append("skillname"+i, data[i].skillName);
+    fd.append("skilldetail"+i, data[i].skillDetail);
+    fd.append("skilltype"+i, data[i].skillIcon.split("skill_")[1].split(".png")[0]);
+    fd.append("charname"+i, data[i].character);
+    fd.append("rarity"+i, data[i].rarityIcon.split("icon_")[1].split(".png")[0]);
+    fd.append("maxpower"+i, data[i].powerMax);
+    fd.append("attr"+i, data[i].attributeIcon.split("icon_")[1].split(".png")[0]);
+    fd.append("how2get"+i, data[i].how2get);
+    fd.append("ver"+i, data[i].ver);
+    fd.append("imgurl"+i, data[i].imgURL);
+  }
+  return fd;
 }
