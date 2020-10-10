@@ -1,31 +1,41 @@
-if(document.getElementById("xhrReader")){
+var modal = document.body.appendChild(document.createElement("div"));
+modal.style.background = "#000C";
+modal.style.position = "fixed";
+modal.style.zIndex = 1000000;
+modal.style.width = "100%";
+modal.style.height = "100%";
+modal.style.left = 0;
+modal.style.top = 0;
+var statusbox = modal.appendChild(document.createElement("div"));
+statusbox.style.position = "absolute";
+statusbox.style.margin = "auto";
+statusbox.style.padding = "5px";
+statusbox.style.left = 0;
+statusbox.style.right = 0;
+statusbox.style.top = 0;
+statusbox.style.bottom = 0;
+statusbox.style.width = "80%";
+statusbox.style.height = "80%";
+statusbox.style.background = "url('https://ongeki-net.com/ongeki-mobile/img/back_base.png') repeat";
+statusbox.innerText = "Sorted Card List v0.5 by mel225 (twitter: casge_pzl)\n";
+
+var pages = 0;
+var cards = 0;
+var loads = 0;
+var cardcount = 0;
+var list = [];
+
+if(document.getElementById("xhrAccesser")){
   xhra.reset();
   main();
 }else{
-  Promise.all([new Promise(resolve=>{
-    var s = document.createElement("script");
-    s.src = "https://mel225.github.io/calcBS/xhrAccesser.js";
-    s.id = "xhrReader";
-    s.onload = ()=>resolve();
-    document.head.appendChild(s);
-  }), new Promise(resolve=>{
-    var s = document.createElement("script");
-    s.src = "https://mel225.github.io/calcBS/Sortable.js";
-    s.id = "Sortable";
-    s.onload = ()=>resolve();
-    document.head.appendChild(s);
-  }), new Promise(resolve=>{
-    var s = document.createElement("script");
-    s.src = "https://mel225.github.io/calcBS/printCardList.js";
-    s.id = "printCardList";
-    s.onload = ()=>resolve();
-    document.head.appendChild(s);
-  })]).then(()=>{
+  var listJS = ["xhrAccesser", "Sortable", "printCardList"];
+  Promise.all(listJS.map(getJS)).then(function(){
     main();
   });
 }
 
-async function main(){
+async function oldmain(){
   var date = new Date();
   var CardList;
   if(localStorage["mel225_CardList"] !== undefined){
@@ -52,14 +62,75 @@ async function main(){
   CardListExOnloadFunction(window.open("about:blank"), CardList);
 }
 
+function main(){
+  alert("カード一覧を取得します。");
+  getCardList();
+}
 
-function getCardDetail(CardNo, CardDetailDoc){
-  return new Promise(resolve => {
+function checkOldData(){
+  
+}
+
+async function getCardList(){
+  //------ カード一覧のすべてのページを取得する
+  var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=2&order=asc&pIdx=";
+  // ページ数を取得
+  pages = xhra.access(url + 1).then(doc=>Number(doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1].trim()));
+  console.log("pages: " + await pages);
+  addStatus("カード一覧　ページ数：" + pages);
+  // すべてのページのURLを生成しアクセス pIdx = pageIndex を 1-pages で URL 生成
+  for(var i=1; i<=await pages; i++){
+    toCardDetailURL(url + i);
+  }
+}
+
+function toCardDetailURL(listurl){
+  var count = 0;
+  xhra.access(listurl).then(function(doc){
+    addStatus("カード一覧　ページNo." + listurl.slice(-1) + " 読込完了");
+    Array.from(doc.getElementsByClassName("t_c border_block m_5 p_5")).forEach(item => {
+      cardcount++;
+      count++;
+      var cardNo = item.getElementsByClassName("t_c break f_11 l_h_12")[0].innerText.trim();
+      var input = item.getElementsByTagName("input");
+      var param = [];
+      for(var j=0; j<input.length; j++){
+        param.push(input[j].name + "=" + encodeURIComponent(input[j].value));
+      }
+      // URL とカード No. でdetail取得
+      getCardDetail(cardNo, "https://ongeki-net.com/ongeki-mobile/card/cardDetail/?" + param.join("&"));
+      // ステータスウィンドウ用
+      if(listurl.slice(-1) == pages && doc.getElementsByClassName("t_c border_block m_5 p_5").length == count){
+        cards = cardcount;
+        addStatus("カード詳細 全" + cards + "カードのURL取得完了");
+        addStatus("カード詳細 読込開始   0%");
+        var prog = 1;
+        var timerID = setInterval(function(){
+          if(loads*10/cards >= prog){
+            addStatus("カード詳細 読込中…" + ("   " + prog*10).slice(-3) + "%");
+            if(prog == 10){
+              clearInterval(timerID);
+              console.log(list);
+              addStatus("");
+              addStatus("念のためlocalStorageにJSONを突っ込んでおきます。");
+              localStorage["mel225_SCL"] = JSON.stringify(list);
+            }
+            prog++;
+          }
+        }, 100);
+      }
+    });
+  });
+}
+
+function getCardDetail(CardNo, url){
+  xhra.access(url).then(function(doc){
+    loads++;
     var CardDetail = {};
     CardDetail.cardNo = CardNo;
-    CardDetail.url = CardDetailDoc.URL;
-    CardDetail.imgURL = CardDetailDoc.getElementsByClassName("card_detail_img w_212")[0].src;
-    var detail = CardDetailDoc.getElementsByClassName("card_detail_container f_l t_l")[0];
+    CardDetail.url = doc.URL;
+    CardDetail.imgURL = doc.getElementsByClassName("card_detail_img w_212")[0].src;
+    var detail = doc.getElementsByClassName("card_detail_container f_l t_l")[0];
     CardDetail.attributeIcon = detail.getElementsByClassName("h_50 f_0")[0].children[0].src;
     CardDetail.rarityIcon = detail.getElementsByClassName("h_50 f_0")[0].children[1].src;
     CardDetail.gentotsuMax = detail.getElementsByClassName("card_detail_star_container v_b f_0")[0].children[0].children.length;
@@ -93,69 +164,22 @@ function getCardDetail(CardNo, CardDetailDoc){
     CardDetail.skillIcon = detail.getElementsByClassName("card_skill_icon")[0].src;
     CardDetail.skillName = detail.getElementsByClassName("f_11 l_h_12 p_l_5")[0].innerText.trim();
     CardDetail.skillDetail = detail.getElementsByClassName("f_10 l_h_10 v_t break")[0].innerText.trim();
-    CardDetail.how2get = CardDetailDoc.getElementsByClassName("card_detail_other_item")[0].innerText.split("\n");
+    CardDetail.how2get = doc.getElementsByClassName("card_detail_other_item")[0].innerText.split("\n");
     CardDetail.ticket = [];
-    for(var i=1; hoge = CardDetailDoc.getElementsByClassName("card_detail_other_item")[i]; i++){
+    for(var i=1; hoge = doc.getElementsByClassName("card_detail_other_item")[i]; i++){
       CardDetail.ticket.push({rarity : hoge.innerText.split("【")[1].split("】")[0], name : hoge.innerText.trim().split("\n")[0].split("】")[1].trim(), num : parseInt(hoge.innerText.trim().split("\n")[1].split("枚")[0].trim())});
     }
-
+/*
     // 後で展開する dom 作成
-    var div = CardDetailDoc.createElement("div");
+    var div = doc.createElement("div");
     div.className = "wrapper main_wrapper t_c";
-    div.appendChild(CardDetailDoc.getElementsByClassName("container3")[0].cloneNode(true));
+    div.appendChild(doc.getElementsByClassName("container3")[0].cloneNode(true));
     CardDetail.document = div.outerHTML;
 
     // 一覧のときに隠す要素
     CardDetail.display = "";
-
-    setTimeout(resolve, 5, CardDetail);
-  });
-}
-
-function getCardList(){
-  return new Promise(async resolve => {
-    //------ カード一覧のすべてのページを取得する
-    var url = "https://ongeki-net.com/ongeki-mobile/card/cardList/pages/?type=0&ipType=0&ip=all&search=0&sIdx=-1&sort=2&order=asc&pIdx=";
-    // ページ数を取得
-    var pages = xhra.access(url + 1).then(doc => {return doc.getElementById("pIdx").nextElementSibling.innerText.split("/")[1];});
-    console.log("pages: " + await pages);
-    // すべてのページのURLを生成 pIdx = pageIndex を 1-pages で URL 生成
-    var PageURLs = [];
-    for(var i=1; i<=await pages; i++){
-      PageURLs.push(url + i);
-    }
-    // 処理を後ろに追加するためにタイムアウトに登録する形でresolve
-    setTimeout(resolve, 1, PageURLs);
-  }).then(PageURLs => {
-    // すべてのページにアクセスする
-    return Promise.all(PageURLs.map(url => {
-      return xhra.access(url);
-    }));
-  }).then(PageDocs => {
-    // ページ内のカードURLを取得する
-    CardURLs = {};
-    return new Promise(resolve => {
-      PageDocs.forEach(doc => {
-        Array.from(doc.getElementsByClassName("t_c border_block m_5 p_5")).forEach(item => {
-          var cardNo = item.getElementsByClassName("t_c break f_11 l_h_12")[0].innerText.trim();
-          var input = item.getElementsByTagName("input");
-          var param = [];
-          for(var j=0; j<input.length; j++){
-            param.push(input[j].name + "=" + encodeURIComponent(input[j].value));
-          }
-          // URL とカード No. を返す
-          CardURLs[cardNo] = "https://ongeki-net.com/ongeki-mobile/card/cardDetail/?" + param.join("&");
-        });
-      });
-      setTimeout(resolve, 1, CardURLs);
-    });
-  }).then(CardURLampNo => {
-    // すべてのカードURLにアクセスしてデータを得る
-    return Promise.all(Object.keys(CardURLs).map(no => {
-      return xhra.access(CardURLs[no]).then(doc => {
-        return getCardDetail(no, doc);
-      });
-    }));
+  */
+    list.push(CardDetail);
   });
 }
 
@@ -204,4 +228,19 @@ function setViewport(win, doc){
     }
     doc.querySelector("meta[name='viewport']").setAttribute("content", viewportContent);
   }
+}
+
+function getJS(name){
+  return new Promise(function(resolve){
+    var s = document.head.appendChild(document.createElement("script"));
+    s.id = name;
+    s.src = `https://mel225.github.io/calcBS/${name}.js`;
+    s.onload = function(){
+      resolve();
+    };
+  });
+}
+
+function addStatus(status){
+  statusbox.innerText += "\n" + status;
 }
